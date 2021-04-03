@@ -11,7 +11,7 @@ import com.kpfu.tindercard.internal.StackSettings
 import com.kpfu.tindercard.internal.StackSmoothScroller
 import com.kpfu.tindercard.internal.StackState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlin.math.min
 
@@ -216,7 +216,7 @@ class StackLayoutManager(
             }
 
             //TODO check this
-            GlobalScope.launch(Dispatchers.Default) {
+            MainScope().launch(Dispatchers.Main) {
                 listener.onCardSwipe(direction)
                 val topView = getTopView()
                 topView?.let { listener.onCardAppear(it, state.topPosition) }

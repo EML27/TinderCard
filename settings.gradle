@@ -1,2 +1,3 @@
+include ':demo'
 include ':tindercard'
 rootProject.name = "TinderCard"

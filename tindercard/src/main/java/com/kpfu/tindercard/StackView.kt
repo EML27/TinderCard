@@ -7,7 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kpfu.tindercard.internal.StackDataObserver
 import com.kpfu.tindercard.internal.StackSnapHelper
 
-class StackView(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
+class StackView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
+) :
     RecyclerView(context, attrs, defStyle) {
 
     init {
