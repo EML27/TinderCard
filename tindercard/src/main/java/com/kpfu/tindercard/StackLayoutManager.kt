@@ -17,13 +17,21 @@ import kotlin.math.min
 
 class StackLayoutManager(
     private val context: Context,
-    val listener: StackListener = StackListener.DEFAULT
 ) :
     RecyclerView.LayoutManager(),
     RecyclerView.SmoothScroller.ScrollVectorProvider {
 
     val settings = StackSettings()
     val state = StackState()
+
+    //listeners
+    var onCardDragListener: (direction: Direction, ratio: Float) -> Unit = { _, _ -> }
+    var onCardSwipeListener: (direction: Direction) -> Unit = { _ -> }
+    var onCardRewoundListener: () -> Unit = {}
+    var onCardCancelListener: () -> Unit = {}
+    var onCardAppearListener: (view: View, position: Int) -> Unit = { _, _ -> }
+    var onCardDisappearListener: (view: View, position: Int) -> Unit = { _, _ -> }
+    //no more listeners(((
 
     override fun generateDefaultLayoutParams(): RecyclerView.LayoutParams =
         RecyclerView.LayoutParams(
@@ -37,7 +45,7 @@ class StackLayoutManager(
         recycler?.let { update(it) }
         if (state?.didStructureChange() == true) {
             val topView = getTopView()
-            topView?.let { listener.onCardAppear(it, this.state.topPosition) }
+            topView?.let { onCardAppearListener(it, this.state.topPosition) }
         }
     }
 
@@ -217,9 +225,9 @@ class StackLayoutManager(
 
             //TODO check this
             MainScope().launch(Dispatchers.Main) {
-                listener.onCardSwipe(direction)
+                onCardSwipeListener(direction)
                 val topView = getTopView()
-                topView?.let { listener.onCardAppear(it, state.topPosition) }
+                topView?.let { onCardAppearListener(it, state.topPosition) }
             }
         }
 
@@ -255,7 +263,7 @@ class StackLayoutManager(
         }
 
         if (state.status.isDragging()) {
-            listener.onCardDrag(state.getDirection(), state.getRatio())
+            onCardDragListener(state.getDirection(), state.getRatio())
         }
     }
 
@@ -362,7 +370,7 @@ class StackLayoutManager(
 
     private fun smoothScrollToPrevious(position: Int) {
         val topView = getTopView()
-        topView?.let { listener.onCardDisappear(it, state.topPosition) }
+        topView?.let { onCardDisappearListener(it, state.topPosition) }
 
         state.proportion = 0f
         state.targetPosition = position

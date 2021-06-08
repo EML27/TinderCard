@@ -7,9 +7,11 @@ import androidx.recyclerview.widget.DiffUtil
 import com.kpfu.tindercard.*
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), StackListener {
+class MainActivity : AppCompatActivity() {
 
-    private val manager = StackLayoutManager(this, this)
+    private val manager = StackLayoutManager(this).apply {
+        onCardSwipeListener = { paginate() }
+    }
     private val adapter = StackAdapter(createList())
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,6 +24,7 @@ class MainActivity : AppCompatActivity(), StackListener {
     private fun setupStackView() {
         manager.setStackFrom(StackForm.TOP)
         manager.setVisibleCount(3)
+        manager.setScaleInterval(0.98f)
         manager.setDirections(Direction.HORIZONTAL)
         stackView.layoutManager = manager
         stackView.adapter = adapter
@@ -51,30 +54,6 @@ class MainActivity : AppCompatActivity(), StackListener {
             manager.setSwipeAnimationSetting(setting)
             stackView.swipe()
         }
-    }
-
-    override fun onCardDrag(direction: Direction, ratio: Float) {
-        //TODO("Not yet implemented")
-    }
-
-    override fun onCardSwipe(direction: Direction) {
-        paginate()
-    }
-
-    override fun onCardRewound() {
-        //TODO("Not yet implemented")
-    }
-
-    override fun onCardCancel() {
-        //TODO("Not yet implemented")
-    }
-
-    override fun onCardAppear(view: View, position: Int) {
-        //TODO("Not yet implemented")
-    }
-
-    override fun onCardDisappear(view: View, position: Int) {
-        //TODO("Not yet implemented")
     }
 
     private fun paginate() {
