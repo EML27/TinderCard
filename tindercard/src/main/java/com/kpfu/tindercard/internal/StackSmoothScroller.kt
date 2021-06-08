@@ -60,18 +60,17 @@ class StackSmoothScroller(private val type: ScrollType, private val manager: Sta
     }
 
     override fun onStart() {
-        val listener = manager.listener
         val state = manager.state
         when (type) {
             ScrollType.AUTO_SWIPE -> {
                 state.next(StackState.Status.AUTO_SWIPE_ANIMATION)
                 manager.getTopView()
-                    ?.let { listener.onCardDisappear(it, manager.state.topPosition) }
+                    ?.let { manager.onCardDisappearListener(it, manager.state.topPosition) }
             }
             ScrollType.MANUAL_SWIPE -> {
                 state.next(StackState.Status.MANUAL_SWIPE_ANIMATION)
                 manager.getTopView()
-                    ?.let { listener.onCardDisappear(it, manager.state.topPosition) }
+                    ?.let { manager.onCardDisappearListener(it, manager.state.topPosition) }
             }
             ScrollType.AUTO_REWIND, ScrollType.MANUAL_CANCEL -> {
                 state.next(StackState.Status.REWIND_ANIMATION)
@@ -80,14 +79,13 @@ class StackSmoothScroller(private val type: ScrollType, private val manager: Sta
     }
 
     override fun onStop() {
-        val listener = manager.listener
         when (type) {
             ScrollType.AUTO_REWIND -> {
-                listener.onCardRewound()
-                manager.getTopView()?.let { listener.onCardAppear(it, manager.state.topPosition) }
+                manager.onCardRewoundListener()
+                manager.getTopView()?.let { manager.onCardAppearListener(it, manager.state.topPosition) }
             }
             ScrollType.MANUAL_CANCEL -> {
-                listener.onCardCancel()
+                manager.onCardCancelListener()
             }
             else -> {
             }
